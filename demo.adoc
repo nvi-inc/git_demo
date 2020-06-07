@@ -1,0 +1,610 @@
+= `git` demo notes
+Ed Himwich
+Version 0.1 - June 06, 2020
+
+:sectnums:
+:experimental:
+== A simple project: Hello, world!
+....
+$ pwd
+/Users/whimwich/Git/hello
+
+$ ls
+Makefile	hello.c
+
+$ cat hello.c
+#include <stdio.h>
+int main() {
+   printf("Hello, World!\n");
+   return 0;
+}
+
+$ cat Makefile 
+hello: hello.o
+
+$ make
+cc    -c -o hello.o hello.c
+cc   hello.o   -o hello
+
+$ ./hello 
+Hello, World!
+....
+
+=== Make it git! Use `git init` to start
+....
+$ git init
+Initialized empty Git repository in /Users/whimwich/Git/hello/.git/
+....
+All the `git` information is in `.git`:
+
+....
+$ tree .git
+.git
+├── HEAD
+├── config
+├── description
+├── hooks
+│   ├── applypatch-msg.sample
+│   ├── commit-msg.sample
+│   ├── fsmonitor-watchman.sample
+│   ├── post-update.sample
+│   ├── pre-applypatch.sample
+│   ├── pre-commit.sample
+│   ├── pre-merge-commit.sample
+│   ├── pre-push.sample
+│   ├── pre-rebase.sample
+│   ├── pre-receive.sample
+│   ├── prepare-commit-msg.sample
+│   └── update.sample
+├── info
+│   └── exclude
+├── objects
+│   ├── info
+│   └── pack
+└── refs
+    ├── heads
+    └── tags
+
+8 directories, 16 files
+....
+
+=== `git status` is the basic command to see where you are
+
+....
+$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Makefile
+	hello
+	hello.c
+	hello.o
+
+nothing added to commit but untracked files present (use "git add" to track)
+....
+
+=== Use `.gitignore` to ignore files, especially binary
+
+Git works best with ASCII files. It can store binary files when
+needed, but it is most useful, and efficient, for source files.
+
+....
+$ cp /tmp/.gitignore .
+$ cat .gitignore 
+*.o
+hello
+
+$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.gitignore
+	Makefile
+	hello.c
+
+nothing added to commit but untracked files present (use "git add" to track)
+....
+
+//$ git log
+//fatal: your current branch 'master' does not have any commits yet
+
+=== First commit
+
+. Add the files that aren't ignored to the index.
++
+....
+$ git add .
+....
+
+. Check status
++
+....
+$ git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   .gitignore
+	new file:   Makefile
+	new file:   hello.c
+
+....
+
+. Commit index
++
+....
+$ git commit -m "Intial commit"
+[master (root-commit) bdca79e] Intial commit
+ 3 files changed, 8 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 Makefile
+ create mode 100644 hello.c
+....
+
+. Check status
+....
+$ git status
+On branch master
+nothing to commit, working tree clean
+....
+
+All clean!
+
+=== Use `git log` to see the history
+....
+$ git log
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+
+....
+
+
+The log is automatically piped through `less`.
+
+==== Other forms of `git log`
+
+===== `--stat` for statistics
+....
+$ git log --stat
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+
+ .gitignore | 2 ++
+ Makefile   | 1 +
+ hello.c    | 5 +++++
+ 3 files changed, 8 insertions(+)
+....
+
+===== `-p` for patch listing
+....
+$ git log -p
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..59b32b2
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++*.o
++hello
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..da75d00
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1 @@
++hello: hello.o
+diff --git a/hello.c b/hello.c
+new file mode 100644
+index 0000000..03bde36
+--- /dev/null
++++ b/hello.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++int main() {
++   printf("Hello, World!\n");
++   return 0;
++}
+....
+
+== Basic concepts
+
+=== Repository
+
+A *repository* is a database that represents the history of the
+project. It is stored in the `.git` subdirectory, along with other
+things, like the index (see below).
+
+=== `git` tracks content
+
+Every object stored by `git` is identified by its SHA1 hash. This is a
+cryptographic 160-bit (shown as 40 hex characters) digest of
+the object. It represents the content of the file. There are about
+10^48^ possibilities. The value is essentially unique for every unique
+object in your repository. In fact, it is unique for every unique
+object in every repository. So if two files in two different
+repositories have the same SHA1 they will have the same content.
+
+=== Commits:
+
+A *commit* is collection of files (represented by SHA1s), the
+directory structure, a commit "message", date, author, and parent
+commit(s) that represents the state of the project at a particular
+point. It also is represented by a SHA1, which is essentially unique. So
+if two repositories have the same SHA1 for a commit, they have the
+same history to that point.
+
+The commit where you are working is referred to as the *HEAD* commit
+and is usually the tip of a branch (see <<Branches>> below). You
+*checkout* the commit that will you make changes to for the next commit.
+
+=== Branches
+
+A *branch* is a sequence of commits that provides a history of the
+changes in the project. The most recent commit on a branch is referred
+to as the *tip*. The main branch is usually called *master*. It is
+usually has the main line of development. There be can other branches
+for various uses, including:
+
+* _feature_ branches to develop new features
+* _maintenace_ branches for an existing release.
+
+
+=== How content is organized
+We are working with three distinct sets of data:
+
+. The current commit, which is a saved state of the project.
+. The *index* (or cache) which is where changes are *staged* for the next commit. When you checkout a commit, the index and the commit agree. When you make a commit, you are storing the index. If there are no changes in the index, there is nothing to commit.
+. The working directory, which is what you edit and see with `ls`.
+
+==== Workflow
+
+. Modify working directory
+. `add` changes to index. When a file is added to index, it is considered *staged*
+. `commit` index to make a new commit.
+
+You don't have to add all your changes to the index before committing.
+A commit will only use the changes in the index. This allows you
+flexibility to commit subsets of changes.
+
+== Making a change
+....
+$ cp /tmp/hellos.c hello.c
+$ cat hello.c
+#include <stdio.h>
+int main() {
+   printf("Hello, Worlds!\n");
+   return 0;
+}
+....
+
+=== What is our status: modified, not staged
+....
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   hello.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+....
+=== How is this different than what is in the index
+
+Use the `diff` feature.
+....
+$ git diff
+diff --git a/hello.c b/hello.c
+index 03bde36..1e2cfea 100644
+--- a/hello.c
++++ b/hello.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+ int main() {
+-   printf("Hello, World!\n");
++   printf("Hello, Worlds!\n");
+    return 0;
+ }
+....
+
+//$ make
+//cc    -c -o hello.o hello.c
+//cc   hello.o   -o hello
+//$ ./hello
+//Hello, Worlds!
+
+=== Add it 
+....
+$ git add .
+
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   hello.c
+
+....
+
+NOTE: Adding files that have not changed has no effect on the
+index. In this case, adding `.` picks up only the modified file.
+
+=== Commit it
+....
+$ git commit -m "Change to worlds"
+[master 958ad36] Change to worlds
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+....
+=== The log
+....
+$ git log
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:35:39 2020 -0400
+
+    Change to worlds
+
+commit bdca79e9499918240c27ff43c6598b26db6c0893
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+....
+
+//$ git checkout bdca79e94
+//Note: switching to 'bdca79e94'.
+//
+//You are in 'detached HEAD' state. You can look around, make experimental
+//changes and commit them, and you can discard any commits you make in this
+//state without impacting any branches by switching back to a branch.
+//
+//If you want to create a new branch to retain commits you create, you may
+//do so (now or later) by using -c with the switch command. Example:
+//
+//  git switch -c <new-branch-name>
+//
+//Or undo this operation with:
+//
+//  git switch -
+//
+//Turn off this advice by setting config variable advice.detachedHead to false
+//
+//HEAD is now at bdca79e Intial commit
+//$ git log
+//commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD)
+//Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+//Date:   Sat Jun 6 15:31:42 2020 -0400
+//
+//    Intial commit
+//$ make
+//cc    -c -o hello.o hello.c
+//cc   hello.o   -o hello
+//$ ./hellp
+//-bash: ./hellp: No such file or directory
+//$ ./hello
+//Hello, World!
+//$ git checkout master
+//Previous HEAD position was bdca79e Intial commit
+//Switched to branch 'master'
+//$ git log
+//commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+//Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+//Date:   Sat Jun 6 15:35:39 2020 -0400
+//
+//    Change to worlds
+//
+//commit bdca79e9499918240c27ff43c6598b26db6c0893
+//Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+//Date:   Sat Jun 6 15:31:42 2020 -0400
+//
+//    Intial commit
+//$ make
+//cc    -c -o hello.o hello.c
+//cc   hello.o   -o hello
+//$ ./hello 
+//Hello, Worlds!
+== Make a new branch
+
+This might be used for a new feature or to maintain a specific version.
+
+
+Using `checkout -b` will create create a new branch at the current commit and leave it checked out.
+....
+$ git checkout -b galaxy
+Switched to a new branch 'galaxy'
+....
+
+=== Log
+
+....
+$ git log
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> galaxy,master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:35:39 2020 -0400
+
+    Change to worlds
+
+commit bdca79e9499918240c27ff43c6598b26db6c0893
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+....
+=== Show branches
+....
+$ git branch -a
+* galaxy
+  master
+....
+
+=== Update code on new branch
+
+....
+$ cp /tmp/hellog.c hello.c
+$ cat hello.c
+#include <stdio.h>
+int main() {
+   printf("Hello, Galaxy!\n");
+   return 0;
+}
+....
+
+=== File is updated
+....
+$ git status
+On branch galaxy
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   hello.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+....
+
+=== Add it
+
+You can add files selectively depending on what you want to commit
+....
+$ git add hello.c
+
+$ git status
+On branch galaxy
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   hello.c
+....
+=== Commit it
+
+....
+$ git commit -m "Switch to galaxy"
+[galaxy 71b0756] Switch to galaxy
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+....
+
+=== Log now
+
+....
+$ git log
+commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> galaxy)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:40:45 2020 -0400
+
+    Switch to galaxy
+
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:35:39 2020 -0400
+
+    Change to worlds
+
+commit bdca79e9499918240c27ff43c6598b26db6c0893
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+....
+
+== Merge the change into *master*
+
+=== Switch back to `master` branch
+
+....
+$ git checkout master
+Switched to branch 'master'
+$ git log
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:35:39 2020 -0400
+
+    Change to worlds
+
+commit bdca79e9499918240c27ff43c6598b26db6c0893
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+....
+
+=== Merge changes from `galaxy` branch
+....
+$ git merge galaxy
+Updating 958ad36..71b0756
+Fast-forward
+ hello.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+....
+
+[NOTE]
+====
+
+The merge was *Fast-forward*. This makes the changes from
+the *galaxy* branch look like they were originally added to the
+*master* branch (see <<Look at log now>> below). This is good for small changes,
+    but sometimes you want to have a separate _merge_ commit to record the
+    path of a significant development. For that case, you can  use the
+    `--no-ff` option.
+
+You won't be able to Fast-forward if the branch you are merging onto
+    was changed since it was branched off from. However, you can
+    *rebase* the other branch to the target branch to get a similar
+    effect.
+====
+
+
+=== Look at log now
+
+New commit has the same SHA as the HEAD commit on `galaxy`
+
+....
+$ git log
+commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> master, galaxy)
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:40:45 2020 -0400
+
+    Switch to galaxy
+
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:35:39 2020 -0400
+
+    Change to worlds
+
+commit bdca79e9499918240c27ff43c6598b26db6c0893
+Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
+Date:   Sat Jun 6 15:31:42 2020 -0400
+
+    Intial commit
+....
+
+=== Delete *galaxy* branch
+....
+$ git branch -d galaxy
+Deleted branch galaxy (was 71b0756).
+....
+
+//$ make
+//cc    -c -o hello.o hello.c
+//cc   hello.o   -o hello
+//$ ./hello 
+//Hello, Galaxy!
+//$ 
+
