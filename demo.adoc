@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.2 - June 06, 2020
+Version 0.3 - June 06, 2020
 
 :sectnums:
 :experimental:
@@ -92,7 +92,7 @@ $ tree .git
 NOTE: You can live a quite happy Git life and never delve into the
 *.git* sub-directory.  You may need to use it for some advanced
 operations. The most likely things to be useful are *config* and
-*refs*. The main store of data is the *objects* directory.
+*refs*. The main store of data is in the *objects* directory.
 
 NOTE: If you delete the *.git* sub-directory, you have removed Git and
 all the history from your project.
@@ -178,7 +178,7 @@ Now the files are no longer untracked, but are staged to be committed.
 
 NOTE: The `status` command gives hints about how to undo an action.
 This is just one example of the many ways Git has to undo what has
-happened.
+already happened.
 
 === Commit changes that are in the index
 
@@ -222,8 +222,9 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 
 ....
 
-NOTE: The *commit* line shows the SHA of the commit (see <<Git tracks
-content>> below) and that this is the *HEAD* commit and the tip of
+NOTE: The *commit* line shows the SHA of the commit (see
+<<Git tracks content>>
+below) and that this is the *HEAD* commit and the tip of
 *master*.
 
 The log is automatically piped through _less_.
@@ -300,17 +301,23 @@ represents the content of the file. There are about 10^48^
 possibilities. The value is essentially unique for every unique object
 in your repository. In fact, it is essentially unique for every unique
 object in every repository. So if two files in two different
-repositories have the same SHA1 they will have the same content.
+repositories have the same SHA1 they can be expected to have the same
+content.
 
 === Commits
 
-A _commit_ is collection of files (represented by SHA1s), the
-directory structure (in a  _tree_ object), a commit "message", date,
-          author, and parent commit(s) that corresponds to the state
-          of the project at a particular point. It also is represented
-          by a SHA1, which as said before, is essentially unique. So
-          if two repositories have the same SHA1 for a commit, they
-          have the same history to that point.
+A _commit_ is collection of:
+
+    * the hash of the _tree_ that represents the files (and directory structure)
+    * author information: name, e-mail, time
+    * committer information: name, e-mail, time
+    * commit message
+    * the hash(es) of parent commit(s)
+
+that corresponds to the state of the project at that  point. It also
+is represented by an SHA1 hash, which as said before, is essentially unique.
+So if two repositories have the same SHA1 for a commit, they can be
+expected to have the same history to that point.
 
 The commit where you are working is referred to as the *HEAD* commit
 and is usually the tip of a branch (see <<Branches>> below). You
@@ -322,7 +329,7 @@ commit.
 A _branch_ is a sequence of commits that provides a history of the
 changes in the project. Generally speaking all commits are on
 branches. The most recent commit on a branch is referred to as the
-_tip_. The main branch is usually called *master*. It usually has the
+_tip_. The main branch is usually called *master*; it usually has the
 main line of development. There can be other branches for various
 uses, including:
 
@@ -336,17 +343,23 @@ NOTE: Branching is intended to be easy and fast. It can be used for
 even the smallest changes. That is a good idea. You never know when a
 change is going to get bigger than you expected.
 
+=== Tags
+
+A _tag_ is used to mark a specific commit for future reference. It is
+basically just a pointer to the commit. This could be to identify a
+commit that was used for a release or just to keep track of it. There
+are annotated tags and lightweight tags.
+
 === How content is organized
 
 At any given time, in addition to the repository, we are working with
-three distinct sets of data:
+three distinct representations of the files in the project:
 
 . The current *HEAD* commit, which is a saved state of the project.
 
 . The _index_ (or cache) which is where changes are staged for the
-next commit. When you checkout a commit, the index and the *HEAD*
-commit agree. When you make a commit, you are storing what is in the
-index. If there are no changes in the index, there is nothing to
+next commit. When you make a commit, you are storing what is in
+the index. If there are no changes in the index, there is nothing to
 commit.
 
 . The _working directory_, which is what you edit and what you see
@@ -354,15 +367,18 @@ with `ls`.
 
 === Workflow
 
-. Modify working directory, which starts out the same as the *HEAD*
-commit.
+. Checkout a specific commit (by branch, tag, or hash). This becomes
+the *HEAD* commit.
 
-. `add` the changes to the index, which also started out the same as
-the *HEAD* commit. When a file is added to index, it is considered
-staged.
+. Modify the working directory, which starts out with the same files
+as the *HEAD* commit.
 
-. `commit` the index to make a new commit. The new commit becomes the
-new *HEAD*.
+. `add` the changes to the index, which also started out with the same
+files as the *HEAD* commit. When a file is added to index, it is
+considered _staged_.
+
+. `commit` the files in the index to make a new commit. The new commit
+becomes the new *HEAD*.
 
 You don't have to add all your changes to the index before committing.
 A commit will only use the changes in the index. This allows you
@@ -760,10 +776,7 @@ Deleted branch galaxy (was 71b0756).
 
 == Add a tag to a commit
 
-You can use a _tag_ to mark a commit for future reference. It is
-basically just a pointer to a commit. This could be for a release or
-just to keep track of it. There are annotated tags and lightweight
-tags. To add a lightweight tag:
+To add a lightweight tag:
 
 ....
 $ git tag v1
