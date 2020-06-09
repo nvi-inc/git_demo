@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.3 - June 06, 2020
+Version 0.4 - June 06, 2020
 
 :sectnums:
 :experimental:
@@ -9,18 +9,26 @@ Version 0.3 - June 06, 2020
 
 <<<
 
-== A simple project: Hello, world!
+== Preamble
 
-**NOTE**s are used to provide additional information that may be
+Generally the O'Rielly font conventions are followed, except:
+
+* `monospace` is used for file names, commands, code, and text to be typed by user
+
+*IMPORTANT* admonitions  are used to emphasize critical points.
+
+*NOTE* admonitions are used to provide additional information that may be
 useful, but are not part of the main discussion.
 
 NOTE: The output in some examples may differ in small ways on the
 version of Git being used. These notes were prepared using version
-*2.26.2*.
+_2.26.2_.
 
 NOTE: Extra blank lines have be added between commands in the listings
 to improve readability. Also the colorization of the Git output has
 been lost.
+
+== A simple project: Hello, world!
 
 === Initial files
 ....
@@ -56,7 +64,7 @@ $ git init
 Initialized empty Git repository in /Users/whimwich/Git/hello/.git/
 ....
 
-All the Git data is in  the *.git* sub-directory:
+All the Git data is in  the `.git` sub-directory:
 
 ....
 $ tree .git
@@ -90,11 +98,11 @@ $ tree .git
 ....
 
 NOTE: You can live a quite happy Git life and never delve into the
-*.git* sub-directory.  You may need to use it for some advanced
-operations. The most likely things to be useful are *config* and
-*refs*. The main store of data is in the *objects* directory.
+`.git` sub-directory.  You may need to use it for some advanced
+operations. The most likely things to be useful are `config` and
+`refs`. The main store of data is in the `objects` directory.
 
-NOTE: If you delete the *.git* sub-directory, you have removed Git and
+NOTE: If you delete the `.git` sub-directory, you have removed Git and
 all the history from your project.
 
 === `git status` is the basic command to see where you are
@@ -120,7 +128,7 @@ either content that you have not added to Git yet or files you don't
 want keep track of. In the latter case, this usually includes binary
 files. Typically, you don't want to see any untracked files.
 
-=== Use *.gitignore* to ignore files, especially binary ones
+=== Use `.gitignore` to ignore files, especially binary ones
 
 Git works best with ASCII files. It can store binary files when
 needed, but it is most useful, and efficient, for source files.  It is
@@ -146,7 +154,7 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 ....
 
-NOTE: The *.gitignore* file has a syntax to allow fine-grained control
+NOTE: The `.gitignore` file has a syntax to allow fine-grained control
 of what is ignored. The basic syntax, as shown in the example above,
    is fairly simple.
 
@@ -155,7 +163,7 @@ of what is ignored. The basic syntax, as shown in the example above,
 
 === Add files to index
 
-Add the files that aren't ignored to the index. The use of *.* adds
+Add the files that aren't ignored to the index. The use of `.` adds
  all files in the current directory and below.
  
 ....
@@ -194,7 +202,7 @@ $ git commit -m "Initial commit"
 NOTE: If you leave out the `-m` and the commit message, Git will
 schedule an editor (_vi_ by default) so you can compose a, possibly
 multi-line,  message.  The comments in the message (lines starting
-        with *#*) are only informational. If you close the file
+        with `#`) are only informational. If you close the file
 without adding anything, Git will abort the commit. 
 
 === Check status
@@ -222,10 +230,10 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 
 ....
 
-NOTE: The *commit* line shows the SHA of the commit (see
+NOTE: The `commit` line shows the SHA of the commit (see
 <<Git tracks content>>
-below) and that this is the *HEAD* commit and the tip of
-*master*.
+below) and that this is the `HEAD` commit and the tip of
+`master`.
 
 The log is automatically piped through _less_.
 
@@ -289,7 +297,7 @@ index 0000000..03bde36
 
 A _repository_ (_repo_ for short) is a database that represents the
 history of the project as a set of commits (see <<Commits>> below). It
-is stored in the *.git* subdirectory, along with other things, like
+is stored in the `.git` sub-directory, along with other things, like
 the index (see below).
 
 === Git tracks content
@@ -300,13 +308,13 @@ by its SHA1 (or sometimes just SHA) hash. This is a cryptographic
 represents the content of the file. There are about 10^48^
 possibilities. The value is essentially unique for every unique object
 in your repository. In fact, it is essentially unique for every unique
-object in every repository. So if two files in two different
+object in every repository. So if two objects, say files, in two different
 repositories have the same SHA1 they can be expected to have the same
 content.
 
 === Commits
 
-A _commit_ is collection of:
+A _commit_ consists of:
 
     * the hash of the _tree_ that represents the files (and directory structure)
     * author information: name, e-mail, time
@@ -315,21 +323,21 @@ A _commit_ is collection of:
     * the hash(es) of parent commit(s)
 
 that corresponds to the state of the project at that  point. It also
-is represented by an SHA1 hash, which as said before, is essentially unique.
-So if two repositories have the same SHA1 for a commit, they can be
-expected to have the same history to that point.
+is represented by its  SHA1 hash, which as said before, is essentially
+unique.  So if two commits in two repositories have the same SHA1,
+    they can be expected to have the same content (including history)
+    to that point.
 
-The commit where you are working is referred to as the *HEAD* commit
-and is usually the tip of a branch (see <<Branches>> below). You
-_checkout_ the commit that will you make changes to for the next
-commit.
+NOTE: The commit where you are working is referred to as the `HEAD` commit
+and is usually the tip of a branch (see <<Branches>> below).  If it is
+not the tip of a branch, it is a _detached_ `HEAD`.
 
 === Branches
 
 A _branch_ is a sequence of commits that provides a history of the
 changes in the project. Generally speaking all commits are on
 branches. The most recent commit on a branch is referred to as the
-_tip_. The main branch is usually called *master*; it usually has the
+_tip_. The main branch is usually called `master`; it usually has the
 main line of development. There can be other branches for various
 uses, including:
 
@@ -355,7 +363,7 @@ are annotated tags and lightweight tags.
 At any given time, in addition to the repository, we are working with
 three distinct representations of the files in the project:
 
-. The current *HEAD* commit, which is a saved state of the project.
+. The current `HEAD` commit, which is a saved state of the project.
 
 . The _index_ (or cache) which is where changes are staged for the
 next commit. When you make a commit, you are storing what is in
@@ -368,19 +376,25 @@ with `ls`.
 === Workflow
 
 . Checkout a specific commit (by branch, tag, or hash). This becomes
-the *HEAD* commit.
+the `HEAD` commit. If you don't checkout a specific commit, you are
+just working at whatever the current `HEAD` is.
 
 . Modify the working directory, which starts out with the same files
-as the *HEAD* commit.
+as the `HEAD` commit.
 
 . `add` the changes to the index, which also started out with the same
-files as the *HEAD* commit. When a file is added to index, it is
-considered _staged_.
+files as the `HEAD` commit. When a file is added to index, it is
+considered _staged_. 
 
 . `commit` the files in the index to make a new commit. The new commit
-becomes the new *HEAD*.
+becomes the new `HEAD`.
 
-You don't have to add all your changes to the index before committing.
+IMPORTANT: After ``add``ing changes to the index, you can make further
+changes to the affected files, but you will need to `add` the
+additional changes.  Each `add` adds the content you have
+changed; it is not a "marker" that the working directory has changed.
+
+NOTE: You don't have to add all your changes to the index before committing.
 A commit will only use the changes in the index. This allows you
 flexibility to commit subsets of changes.
 
@@ -439,8 +453,8 @@ There are a lot of very useful features in `diff`. Here are just a
 few:
 
  * `git diff`  -- difference index _to_ working directory
- * `git diff HEAD` -- difference *HEAD* _to_ working directory
- * `git diff --cached` -- difference *HEAD* _to_ cache (index)
+ * `git diff HEAD` -- difference `HEAD` _to_ working directory
+ * `git diff --cached` -- difference `HEAD` _to_ cache (index)
 
 You can also add file or directory names at the end of the command to
 restrict it to specific files or directories.
@@ -467,7 +481,7 @@ Changes to be committed:
 ....
 
 NOTE: Adding files that have not changed has no effect on the index.
-In this case, adding *.* picks up only the modified file.
+In this case, adding `.` picks up only the modified file.
 
 [NOTE]
 ====
@@ -564,7 +578,7 @@ In this case we are going to expand our greeting to galaxies.
 === Create new branch
 
 Using `checkout -b` will create create a new branch at the current
-*HEAD* commit and leave it checked out.
+`HEAD` commit and leave it checked out.
 
 ....
 $ git checkout -b galaxy
@@ -590,8 +604,8 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
     Initial commit
 ....
 
-NOTE: *HEAD* is the tip of *galaxy* and also happens to be the same
-commit as the tip of *master*.
+NOTE: `HEAD` is the tip of `galaxy` and also happens to be the same
+commit as the tip of `master`.
 
 === Show branches
 ....
@@ -600,7 +614,7 @@ $ git branch -a
   master
 ....
 
-The *** marks the active branch.
+The `*` marks the active branch.
 
 === Make the change in the new branch
 
@@ -674,16 +688,16 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
     Initial commit
 ....
 
-NOTE: The latest cmmmit is the *HEAD* commit, which is the tip of the
-*galazy* branch. The preceding commit is still the tip of *master*. We
+NOTE: The latest cmmmit is the `HEAD` commit, which is the tip of the
+`galazy` branch. The preceding commit is still the tip of `master*. We
 see it because it is in the history of this branch.
 
-== Merge the changes into the *master* branch
+== Merge the changes into the `master` branch
 
-This will bring the changes in the feature branch into the *master*
+This will bring the changes in the feature branch into the *master`
 branch
 
-=== Switch back to the *master* branch
+=== Switch back to the `master` branch
 
 ....
 $ git checkout master
@@ -720,22 +734,22 @@ Fast-forward
 [NOTE]
 ====
 
-The merge was *Fast-forward*. This makes the changes from the *galaxy*
-branch look like they were originally added to the *master* branch
+The merge was `Fast-forward`. This makes the changes from the `galaxy`
+branch look like they were originally added to the `master` branch
 (see log output below). This is good for small changes, but sometimes
 you want to have a separate _merge commit_ to record the path of a
-significant development. For that case, you can  use the *--no-ff*
+significant development. For that case, you can  use the `--no-ff`
 option.
 
 You won't be able to Fast-forward if the branch you are merging onto
     was changed since it was branched off from. However, you can
-    *rebase* the other branch to the target branch to get a similar
+    `rebase` the other branch to the target branch to get a similar
     effect.
 
 ====
 === Look at the log now
  
-The new commit has the same SHA as the *HEAD* commit on *galaxy*
+The new commit has the same SHA as the `HEAD` commit on `galaxy`
  
 ....
 $ git log
@@ -758,8 +772,8 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
     Initial commit
 ....
  
-NOTE: Now *HEAD* is the tip of *master* and
-also happens to be the same commit as the tip of *galaxy*.
+NOTE: Now `HEAD` is the tip of `master` and
+also happens to be the same commit as the tip of `galaxy`.
 
 === Delete the feature branch
 ....
@@ -803,16 +817,16 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 
 The tag is listed for the commit.
 
-NOTE: The *galaxy* branch is no longer shown, since it has been
+NOTE: The `galaxy` branch is no longer shown, since it has been
 deleted. Its former commits are still there since they were merged
-onto *master*.
+onto `master`.
 
 [NOTE]
 ====
 
 The tag can be used to checkout that commit even after the branch has
-moved past it. For example to create a maintenance branch for *v1*,
-      you can use:
+moved past it. For example to create a maintenance branch for old
+commit tagged as `v1`, you can use:
 
 ....
 $ git checkout v1
@@ -833,12 +847,17 @@ v1
 
 == Resources
 
+This is a small selection of the available resources.
+
+=== _man_ pages
 You can get help on any command from the _man_ page by using the
 `--help` option, like:
 
 ....
 $ git commit --help
 ....
+
+=== On the web
 
 There is a lot of useful information, at all levels, that is only a
 search away on the web. Most of it seems to be trustworthy, but it is
@@ -847,19 +866,19 @@ it.
 
 Some useful links:
 
+* https://www.atlassian.com/git/tutorials  -- Tutorials
+* https://git-scm.com/  -- Git community online
 * https://chris.beams.io/posts/git-commit/  -- How to write a Git commit message
 * https://ohshitgit.com/  -- Some recovery strategies
 * https://stackoverflow.com/questions/16562121/git-diff-head-vs-staged
-* https://www.atlassian.com/git/tutorials 
 
-Books:
+=== Books
 
 * "Version Control with Git, 2nd Edition"
 by Jon Loeliger, Matthew McCullough,
 Released August 2012,
 Publisher(s): O'Reilly Media, Inc.,
 ISBN: 9781449316389
-:
 
 == Git commands mentioned
 
@@ -876,21 +895,21 @@ ISBN: 9781449316389
 | `git add <files>` | Add `<files>` to index
 | `git commit -m "Initial commit"` | Commit with commit message
 | `git commit` | Commit without commit message (an editor is run)
-| `git log` | Show history from current *HEAD*
+| `git log` | Show history from current `HEAD`
 | `git log --stat` | History with change statistics
 | `git log -p` | History with patch listing
 | `git rm <files>` | Remove `<files>`
 | `git mv ... ...` | Rename files
 | `git diff` | difference index _to_ working directory
-| `git diff HEAD` | difference *HEAD* _to_ working directory
-| `git diff --cached` | difference *HEAD* _to_ cache (index)
-| `git checkout -b galaxy` | Starting at *HEAD* create a new branch (*galaxy*) and check it out
+| `git diff HEAD` | difference `HEAD` _to_ working directory
+| `git diff --cached` | difference `HEAD` _to_ cache (index)
+| `git checkout -b galaxy` | Starting at `HEAD` create a new branch (`galaxy`) and check it out
 | `git branch -a` | List all branches
-| `git checkout master` | Checkout branch (*master*)
-| `git merge galaxy` | Merge branch (*galaxy*) into current branch
-| `git branch -d galaxy` | Delete branch (*galaxy*)
-| `git tag v1` | Add tag (*v1*) to current *HEAD*
-| `git checkout v1` | Checkout tag (*v1*)
+| `git checkout master` | Checkout branch (`master`)
+| `git merge galaxy` | Merge branch (`galaxy`) into current branch
+| `git branch -d galaxy` | Delete branch (`galaxy`)
+| `git tag v1` | Add tag (`v1`) to current `HEAD`
+| `git checkout v1` | Checkout tag (`v1`)
 | `git tag` | List tags
 | `git commit --help` |Show help
 |=============================================================
