@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.5 - June 09, 2020
+Version 0.6 - June 09, 2020
 
 :sectnums:
 :experimental:
@@ -407,6 +407,29 @@ NOTE: You don't have to add all your changes to the index before committing.
 A commit will only use the changes in the index. This allows you
 flexibility to commit subsets of changes.
 
+=== Timestamps
+
+Git does not preserve timestamps. The modification times are in
+the commits. When you checkout a file or version, all files
+that are updated get the current time. It is better this
+way. For example, if you checkout an old version, you want _make_ to
+realize that the files were updated and need to be compiled.
+
+=== File permissions
+
+Git only remembers if a file is executable or not or a symbolic link.
+The table <<perms>> summarizes the permission values.
+
+.Git file permission values
+[[perms]]
+[width="50%",cols="^,^,^"]
+|=============================================================
+| File type | Internal Git | On disk
+
+| executable| `100755` | `-rwxr-xr-x`
+|non-executable| `100644` | `+-rw-r--r--+`
+| symbolic link | `120000`| `lrwxrwxrwx`
+|=============================================================
 == Making a change
 
 Let's greet more than one world.
