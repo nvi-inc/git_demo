@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.4 - June 06, 2020
+Version 0.5 - June 09, 2020
 
 :sectnums:
 :experimental:
@@ -11,9 +11,10 @@ Version 0.4 - June 06, 2020
 
 == Preamble
 
-Generally the O'Rielly font conventions are followed, except:
+Font conventions:
 
-* `monospace` is used for file names, commands, code, and text to be typed by user
+* _italics_ is used for program names, emphasis, and definition of technical terms
+* `monospace` is used for file names, code, program output, and commands/text to be typed by user
 
 *IMPORTANT* admonitions  are used to emphasize critical points.
 
@@ -22,7 +23,7 @@ useful, but are not part of the main discussion.
 
 NOTE: The output in some examples may differ in small ways on the
 version of Git being used. These notes were prepared using version
-_2.26.2_.
+`2.26.2`.
 
 NOTE: Extra blank lines have be added between commands in the listings
 to improve readability. Also the colorization of the Git output has
@@ -123,12 +124,14 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 ....
 
+The `git status` output is fairly verbose, including giving suggestions for what you might want to do next.
+
 The presence of _untracked_ files is a problem because they represent
 either content that you have not added to Git yet or files you don't
 want keep track of. In the latter case, this usually includes binary
 files. Typically, you don't want to see any untracked files.
 
-=== Use `.gitignore` to ignore files, especially binary ones
+=== Use the `.gitignore` file to ignore files
 
 Git works best with ASCII files. It can store binary files when
 needed, but it is most useful, and efficient, for source files.  It is
@@ -161,7 +164,7 @@ of what is ignored. The basic syntax, as shown in the example above,
 //$ git log
 //fatal: your current branch 'master' does not have any commits yet
 
-=== Add files to index
+=== Add the files to the index
 
 Add the files that aren't ignored to the index. The use of `.` adds
  all files in the current directory and below.
@@ -182,7 +185,7 @@ Changes to be committed:
 
 ....
 
-Now the files are no longer untracked, but are staged to be committed.
+Now the files are no longer untracked, but are staged to be committed. The `.gitignore` file is just another file to be tracked by Git.
 
 NOTE: The `status` command gives hints about how to undo an action.
 This is just one example of the many ways Git has to undo what has
@@ -205,7 +208,7 @@ multi-line,  message.  The comments in the message (lines starting
         with `#`) are only informational. If you close the file
 without adding anything, Git will abort the commit. 
 
-=== Check status
+=== Check the status again
 
 ....
 $ git status
@@ -233,11 +236,13 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 NOTE: The `commit` line shows the SHA of the commit (see
 <<Git tracks content>>
 below) and that this is the `HEAD` commit and the tip of
-`master`.
+the `master` branch.
 
-The log is automatically piped through _less_.
+The log is automatically piped through _less_, which can be used to search the output.
 
 ==== Some other forms of `git log`
+
+This whole sub-section is an aside.
 
 ===== `--stat` for statistics
 ....
@@ -253,6 +258,8 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
  hello.c    | 5 +++++
  3 files changed, 8 insertions(+)
 ....
+
+Since the output is piped through _less_, you search it for file names to see when they change.
 
 ===== `-p` for patch listing
 ....
@@ -291,6 +298,8 @@ index 0000000..03bde36
 +}
 ....
 
+Since the output is piped through _less_, you search it for code (and file names, etc.).
+
 == Basic concepts
 
 === Repository
@@ -303,13 +312,13 @@ the index (see below).
 === Git tracks content
 
 Every object stored by Git (files, commits, trees, etc.) is identified
-by its SHA1 (or sometimes just SHA) hash. This is a cryptographic
+by its _SHA1_ (or sometimes just _SHA_) hash. This is a cryptographic
 160-bit (shown as 40 hex characters) digest of the object. It
 represents the content of the file. There are about 10^48^
-possibilities. The value is essentially unique for every unique object
+possible values. The value is essentially unique for every unique object
 in your repository. In fact, it is essentially unique for every unique
-object in every repository. So if two objects, say files, in two different
-repositories have the same SHA1 they can be expected to have the same
+object in all repositories. So if two objects, say files, in two different
+repositories have the same SHA1, they can be expected to have the same
 content.
 
 === Commits
@@ -323,7 +332,7 @@ A _commit_ consists of:
     * the hash(es) of parent commit(s)
 
 that corresponds to the state of the project at that  point. It also
-is represented by its  SHA1 hash, which as said before, is essentially
+is represented by its SHA1 hash, which as said before, is essentially
 unique.  So if two commits in two repositories have the same SHA1,
     they can be expected to have the same content (including history)
     to that point.
@@ -342,7 +351,7 @@ main line of development. There can be other branches for various
 uses, including:
 
 * _feature_ branches to develop new features
-* _maintenance_ branches for an existing release.
+* _maintenance_ branches for fixes to an existing release.
 
 NOTE: When you _checkout_ a branch, you are automatically put at the
 tip. A branch points to its tip commit.
@@ -373,7 +382,7 @@ commit.
 . The _working directory_, which is what you edit and what you see
 with `ls`.
 
-=== Workflow
+=== An example workflow
 
 . Checkout a specific commit (by branch, tag, or hash). This becomes
 the `HEAD` commit. If you don't checkout a specific commit, you are
@@ -383,7 +392,7 @@ just working at whatever the current `HEAD` is.
 as the `HEAD` commit.
 
 . `add` the changes to the index, which also started out with the same
-files as the `HEAD` commit. When a file is added to index, it is
+files as the `HEAD` commit. When a file is added to the index, it is
 considered _staged_. 
 
 . `commit` the files in the index to make a new commit. The new commit
@@ -391,7 +400,7 @@ becomes the new `HEAD`.
 
 IMPORTANT: After ``add``ing changes to the index, you can make further
 changes to the affected files, but you will need to `add` the
-additional changes.  Each `add` adds the content you have
+additional changes.  Each `add` stages the content you have
 changed; it is not a "marker" that the working directory has changed.
 
 NOTE: You don't have to add all your changes to the index before committing.
@@ -468,7 +477,7 @@ restrict it to specific files or directories.
 //$ ./hello
 //Hello, Worlds!
 
-=== Add it to index
+=== Add it to the index
 ....
 $ git add .
 
@@ -587,7 +596,7 @@ Switched to a new branch 'galaxy'
 
 NOTE: The same approach can be used to create a maintenance branch.
 
-=== Log
+=== Check the log
 
 ....
 $ git log
@@ -630,7 +639,7 @@ int main() {
 }
 ....
 
-. Check status
+. Check the status
 +
 ....
 $ git status
@@ -688,8 +697,8 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
     Initial commit
 ....
 
-NOTE: The latest cmmmit is the `HEAD` commit, which is the tip of the
-`galazy` branch. The preceding commit is still the tip of `master*. We
+NOTE: The latest commmit is the `HEAD` commit, which is the tip of the
+`galaxy` branch. The preceding commit is still the tip of `master`. We
 see it because it is in the history of this branch.
 
 == Merge the changes into the `master` branch
@@ -776,6 +785,10 @@ NOTE: Now `HEAD` is the tip of `master` and
 also happens to be the same commit as the tip of `galaxy`.
 
 === Delete the feature branch
+
+Since we have merged it, we don't need to leave the feature branch
+laying around cluttering things up.
+
 ....
 $ git branch -d galaxy
 Deleted branch galaxy (was 71b0756).
@@ -833,7 +846,7 @@ $ git checkout v1
 $ git checkout -b m1
 ....
 
-Life is easier if branch and tags don't conflict.
+Life is easier if branch and tags names don't conflict.
 ====
 
 [NOTE]
@@ -890,9 +903,9 @@ ISBN: 9781449316389
 
 
 | `git init`|  Initialize repository
-| `git status` | Check status
-| `git add .` | Add current directory structure to index
-| `git add <files>` | Add `<files>` to index
+| `git status` | Check the status
+| `git add .` | Add current directory structure to the index
+| `git add <files>` | Add `<files>` to the index
 | `git commit -m "Initial commit"` | Commit with commit message
 | `git commit` | Commit without commit message (an editor is run)
 | `git log` | Show history from current `HEAD`
