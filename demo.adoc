@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.6 - June 09, 2020
+Version 0.7 - June 12, 2020
 
 :sectnums:
 :experimental:
@@ -29,7 +29,7 @@ NOTE: Extra blank lines have be added between commands in the listings
 to improve readability. Also the colorization of the Git output has
 been lost.
 
-== A simple project: Hello, world!
+== A simple project: Hello world!
 
 === Initial files
 ....
@@ -309,6 +309,15 @@ history of the project as a set of commits (see <<Commits>> below). It
 is stored in the `.git` sub-directory, along with other things, like
 the index (see below).
 
+So what is so great about having all that history? Among other things
+this means that every released version of the project, even every
+individual file version, is preserved and can be recovered.  That is
+helpful for a lot of reasons. One is that you can potentially undo
+changes if you regret them later. Another is that you can research the
+origin of bugs to help figure out better ways to fix them. The tools
+in Git are designed to be useful for examining and manipulating the
+database in a targeted and non-destructive way.
+
 === Git tracks content
 
 Every object stored by Git (files, commits, trees, etc.) is identified
@@ -384,9 +393,10 @@ with `ls`.
 
 === An example workflow
 
-. Checkout a specific commit (by branch, tag, or hash). This becomes
-the `HEAD` commit. If you don't checkout a specific commit, you are
-just working at whatever the current `HEAD` is.
+. Checkout a specific commit (by branch, tag, hash, or other
+reference). This becomes the `HEAD` commit. If you don't checkout a
+specific commit, you are just working at whatever the current `HEAD`
+is.
 
 . Modify the working directory, which starts out with the same files
 as the `HEAD` commit.
@@ -400,8 +410,9 @@ becomes the new `HEAD`.
 
 IMPORTANT: After ``add``ing changes to the index, you can make further
 changes to the affected files, but you will need to `add` the
-additional changes.  Each `add` stages the content you have
-changed; it is not a "marker" that the working directory has changed.
+additional changes if you want to commit them.  Each `add` stages the
+content you have changed; it is not a "marker" that the working
+directory has changed.
 
 NOTE: You don't have to add all your changes to the index before committing.
 A commit will only use the changes in the index. This allows you
@@ -414,6 +425,19 @@ the commits. When you checkout a file or version, all files
 that are updated get the current time. It is better this
 way. For example, if you checkout an old version, you want _make_ to
 realize that the files were updated and need to be compiled.
+
+== Some other details
+
+=== References
+
+You don't have to use the full 40 character hash to refer to a commit. You can use:
+
+* unique prefix of the hash e.g., `bdca` for the initial commit in the <<Use `git log` to see the history>> example above.
+* symbolic names, `HEAD`
+* the name of a branch, `master` which is the commit at the tip of the branch
+* a tag you assign, `v1`.
+* a relative reference to a hash or other reference, e.g., `HEAD~~`, i.e., two before `HEAD`
+
 
 === File permissions
 
