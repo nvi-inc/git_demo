@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.7 - June 12, 2020
+Version 0.71 - August 14, 2023
 
 :sectnums:
 :experimental:
@@ -110,7 +110,7 @@ all the history from your project.
 
 ....
 $ git status
-On branch master
+On branch main
 
 No commits yet
 
@@ -144,7 +144,7 @@ $ cat .gitignore
 hello
 
 $ git status
-On branch master
+On branch main
 
 No commits yet
 
@@ -162,7 +162,7 @@ of what is ignored. The basic syntax, as shown in the example above,
    is fairly simple.
 
 //$ git log
-//fatal: your current branch 'master' does not have any commits yet
+//fatal: your current branch 'main' does not have any commits yet
 
 === Add the files to the index
 
@@ -173,7 +173,7 @@ Add the files that aren't ignored to the index. The use of `.` adds
 $ git add .
 
 $ git status
-On branch master
+On branch main
 
 No commits yet
 
@@ -195,7 +195,7 @@ already happened.
 
 ....
 $ git commit -m "Initial commit"
-[master (root-commit) bdca79e] Initial commit
+[main (root-commit) bdca79e] Initial commit
  3 files changed, 8 insertions(+)
  create mode 100644 .gitignore
  create mode 100644 Makefile
@@ -212,7 +212,7 @@ without adding anything, Git will abort the commit.
 
 ....
 $ git status
-On branch master
+On branch main
 nothing to commit, working tree clean
 ....
 
@@ -225,7 +225,7 @@ doesn't matter when you only have one commit.
 
 ....
 $ git log
-commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:31:42 2020 -0400
 
@@ -236,7 +236,7 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 NOTE: The `commit` line shows the SHA of the commit (see
 <<Git tracks content>>
 below) and that this is the `HEAD` commit and the tip of
-the `master` branch.
+the `main` branch.
 
 The log is automatically piped through _less_, which can be used to search the output.
 
@@ -247,7 +247,7 @@ This whole sub-section is an aside.
 ===== `--stat` for statistics
 ....
 $ git log --stat
-commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:31:42 2020 -0400
 
@@ -264,7 +264,7 @@ Since the output is piped through _less_, you search it for file names to see wh
 ===== `-p` for patch listing
 ....
 $ git log -p
-commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> master)
+commit bdca79e9499918240c27ff43c6598b26db6c0893 (HEAD -> main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:31:42 2020 -0400
 
@@ -355,7 +355,8 @@ not the tip of a branch, it is a _detached_ `HEAD`.
 A _branch_ is a sequence of commits that provides a history of the
 changes in the project. Generally speaking all commits are on
 branches. The most recent commit on a branch is referred to as the
-_tip_. The main branch is usually called `master`; it usually has the
+_tip_. The main branch is usually called `main` (older versions of
+_git_ may use a different default branch name); it usually has the
 main line of development. There can be other branches for various
 uses, including:
 
@@ -434,7 +435,7 @@ You don't have to use the full 40 character hash to refer to a commit. You can u
 
 * unique prefix of the hash e.g., `bdca` for the initial commit in the <<Use `git log` to see the history>> example above.
 * symbolic names, `HEAD`
-* the name of a branch, `master` which is the commit at the tip of the branch
+* the name of a branch, `main` which is the commit at the tip of the branch
 * a tag you assign, `v1`.
 * a relative reference to a hash or other reference, e.g., `HEAD~~`, i.e., two before `HEAD`
 
@@ -473,7 +474,7 @@ int main() {
 === Our status: modified, not staged
 ....
 $ git status
-On branch master
+On branch main
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
   (use "git restore <file>..." to discard changes in working directory)
@@ -529,7 +530,7 @@ restrict it to specific files or directories.
 $ git add .
 
 $ git status
-On branch master
+On branch main
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
 	modified:   hello.c
@@ -555,14 +556,14 @@ files in the working directory directly.
 === Commit it
 ....
 $ git commit -m "Change to worlds"
-[master 958ad36] Change to worlds
+[main 958ad36] Change to worlds
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 ....
 === The log
 ....
 $ git log
-commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:35:39 2020 -0400
 
@@ -607,11 +608,11 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 //-bash: ./hellp: No such file or directory
 //$ ./hello
 //Hello, World!
-//$ git checkout master
+//$ git checkout main
 //Previous HEAD position was bdca79e Initial commit
-//Switched to branch 'master'
+//Switched to branch 'main'
 //$ git log
-//commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+//commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> main)
 //Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 //Date:   Sat Jun 6 15:35:39 2020 -0400
 //
@@ -647,7 +648,7 @@ NOTE: The same approach can be used to create a maintenance branch.
 
 ....
 $ git log
-commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> galaxy, master)
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> galaxy, main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:35:39 2020 -0400
 
@@ -661,13 +662,13 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 ....
 
 NOTE: `HEAD` is the tip of `galaxy` and also happens to be the same
-commit as the tip of `master`.
+commit as the tip of `main`.
 
 === Show branches
 ....
 $ git branch -a
 * galaxy
-  master
+  main
 ....
 
 The `*` marks the active branch.
@@ -731,7 +732,7 @@ Date:   Sat Jun 6 15:40:45 2020 -0400
 
     Switch to galaxy
 
-commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (master)
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:35:39 2020 -0400
 
@@ -745,26 +746,26 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
 ....
 
 NOTE: The latest commmit is the `HEAD` commit, which is the tip of the
-`galaxy` branch. The preceding commit is still the tip of `master`. We
+`galaxy` branch. The preceding commit is still the tip of `main`. We
 see it because it is in the history of this branch.
 
-== Merge the changes into the `master` branch
+== Merge the changes into the `main` branch
 
-This will bring the changes in the feature branch into the *master`
+This will bring the changes in the feature branch into the *main`
 branch
 
-=== Switch back to the `master` branch
+=== Switch back to the `main` branch
 
 ....
-$ git checkout master
-Switched to branch 'master'
+$ git checkout main
+Switched to branch 'main'
 
 $ git status
-On branch master
+On branch main
 nothing to commit, working tree clean
 
 $ git log
-commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> master)
+commit 958ad362fe6a1661e07e0765b13b74ae7475fd57 (HEAD -> main)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:35:39 2020 -0400
 
@@ -791,7 +792,7 @@ Fast-forward
 ====
 
 The merge was `Fast-forward`. This makes the changes from the `galaxy`
-branch look like they were originally added to the `master` branch
+branch look like they were originally added to the `main` branch
 (see log output below). This is good for small changes, but sometimes
 you want to have a separate _merge commit_ to record the path of a
 significant development. For that case, you can  use the `--no-ff`
@@ -809,7 +810,7 @@ The new commit has the same SHA as the `HEAD` commit on `galaxy`
  
 ....
 $ git log
-commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> master, galaxy)
+commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> main, galaxy)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:40:45 2020 -0400
 
@@ -828,7 +829,7 @@ Date:   Sat Jun 6 15:31:42 2020 -0400
     Initial commit
 ....
  
-NOTE: Now `HEAD` is the tip of `master` and
+NOTE: Now `HEAD` is the tip of `main` and
 also happens to be the same commit as the tip of `galaxy`.
 
 === Delete the feature branch
@@ -856,7 +857,7 @@ To add a lightweight tag:
 $ git tag v1
 
 $ git log
-commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> master, tag: v1)
+commit 71b0756022a3c2d1d2008a582d9ccc2ebec40688 (HEAD -> main, tag: v1)
 Author: Ed Himwich <51408905+wehimwich@users.noreply.github.com>
 Date:   Sat Jun 6 15:40:45 2020 -0400
 
@@ -879,7 +880,7 @@ The tag is listed for the commit.
 
 NOTE: The `galaxy` branch is no longer shown, since it has been
 deleted. Its former commits are still there since they were merged
-onto `master`.
+onto `main`.
 
 [NOTE]
 ====
@@ -965,7 +966,7 @@ ISBN: 9781449316389
 | `git diff --cached` | difference `HEAD` _to_ cache (index)
 | `git checkout -b galaxy` | Starting at `HEAD` create a new branch (`galaxy`) and check it out
 | `git branch -a` | List all branches
-| `git checkout master` | Checkout branch (`master`)
+| `git checkout main` | Checkout branch (`main`)
 | `git merge galaxy` | Merge branch (`galaxy`) into current branch
 | `git branch -d galaxy` | Delete branch (`galaxy`)
 | `git tag v1` | Add tag (`v1`) to current `HEAD`
