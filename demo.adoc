@@ -1,6 +1,6 @@
 = Git demonstration notes
 Ed Himwich
-Version 0.71 - August 14, 2023
+Version 0.72 - August 15, 2023
 
 :sectnums:
 :experimental:
@@ -352,10 +352,12 @@ not the tip of a branch, it is a _detached_ `HEAD`.
 
 === Branches
 
-A _branch_ is a sequence of commits that provides a history of the
-changes in the project. Generally speaking all commits are on
-branches. The most recent commit on a branch is referred to as the
-_tip_. The main branch is usually called `main` (older versions of
+A _branch_, or _branch pointer_, is a reference to a specific commit.
+The term _branch_ is also used to refer to the sequence of commits
+that ends with the commit pointed to by a branch pointer. These
+sequences of commits represent lines of development. The most recent
+commit on a branch, pointed by the branch pointer, is referred to as
+the _tip_. The main branch is usually called `main` (older versions of
 _git_ may use a different default branch name); it usually has the
 main line of development. There can be other branches for various
 uses, including:
@@ -364,11 +366,11 @@ uses, including:
 * _maintenance_ branches for fixes to an existing release.
 
 NOTE: When you _checkout_ a branch, you are automatically put at the
-tip. A branch points to its tip commit.
+tip.
 
 NOTE: Branching is intended to be easy and fast. It can be used for
 even the smallest changes. That is a good idea. You never know when a
-change is going to get bigger than you expected.
+change is going to get bigger, or take longer, than you expected.
 
 === Tags
 
